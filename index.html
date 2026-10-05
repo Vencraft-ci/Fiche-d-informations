@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vencraft-CI – Votre catalogue web</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#faf9ff;--card:#fff;--ink:#1a1840;--mut:#5d5a82;--line:#ddd8f3;--v:#6C4CF1;--n:#14123a;--soft:#f1edff;--c1:#6C4CF1;--c2:#1d5fd8;--c3:#d6336c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+header{background:linear-gradient(135deg,#6b4df0,#8466fa 55%,#b19bff);color:#fff;padding:36px 20px 44px;text-align:center}
+header h1{margin:0;font-size:1.9rem;letter-spacing:.5px}
+header .s{margin:6px 0 0;opacity:.9;font-style:italic}
+header p{max-width:520px;margin:16px auto 0;font-size:.95rem;opacity:.9}
+.cta{display:inline-block;margin:20px 0 0;background:#fff;color:#14123a;font-weight:800;font-size:1.05rem;text-decoration:none;padding:15px 28px;border-radius:999px;box-shadow:0 6px 22px rgba(0,0,0,.35);animation:pl 1.8s infinite,cc 6s infinite}
+.cta:hover{transform:scale(1.04)}
+@keyframes pl{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.6),0 6px 22px rgba(0,0,0,.35)}50%{box-shadow:0 0 0 12px rgba(255,255,255,0),0 6px 22px rgba(0,0,0,.35)}}
+@keyframes cc{0%,100%{background:#fff}25%{background:#FFC93C}50%{background:#FF7A59}75%{background:#2EE6B8}}
+h2{animation:hc 7s infinite}
+section:nth-of-type(2n) h2{animation-delay:-2.5s}
+section:nth-of-type(3n) h2{animation-delay:-4.5s}
+@keyframes hc{0%,100%{color:var(--c1)}33%{color:var(--c2)}66%{color:var(--c3)}}
+@media (prefers-reduced-motion:reduce){.cta,h2{animation:none}}
+.lk{display:inline-block;margin-top:6px;font-size:.85rem;font-weight:700;color:var(--v)}
+.vs{border:2px solid var(--v)}
+.vg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.vg{grid-template-columns:1fr}}
+.mic{width:100%;background:linear-gradient(135deg,var(--v),#6b4df0);color:#fff;font-size:1rem;padding:16px;border-radius:14px}
+.mic.on{background:#d92d20;animation:rec 1.2s infinite}
+@keyframes rec{0%,100%{box-shadow:0 0 0 0 rgba(217,45,32,.5)}50%{box-shadow:0 0 0 10px rgba(217,45,32,0)}}
+@media (prefers-reduced-motion:reduce){.mic.on{animation:none}}
+.vb{display:flex;gap:8px}.vb .alt{width:auto;flex:1}
+.vst{font-size:.82rem;color:var(--mut);margin:8px 0;min-height:1.2em}
+.nt{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px;background:var(--bg);font-size:.88rem}
+.nt p{margin:0 0 8px;white-space:pre-wrap;word-break:break-word}
+.nt button{padding:6px 10px;font-size:.8rem;margin-right:6px;background:var(--soft);color:var(--v);border-radius:8px}
+.warn{display:none;background:#fdecea;color:#b42318;border:1px solid #f3a9a3;border-radius:10px;padding:10px 12px;font-weight:700;font-size:.88rem;margin-top:8px}
+.warn.on{display:block}
+.cur{font-weight:700;font-size:.9rem;margin:12px 0 4px;color:var(--v)}
+.cur.p{color:#0e7a5f}
+.phot{display:none;background:#e8f8f2;color:#0b5d48;border:1px solid #a7e3cf;border-radius:10px;padding:9px 12px;font-size:.84rem;margin-top:8px}
+.phot.on{display:block}
+.pbtn{width:100%;margin-top:8px;background:#0fb98a;color:#fff;font-size:1rem;padding:14px;border-radius:14px}
+#vlist{max-height:380px;overflow-y:auto;padding-right:4px;-webkit-overflow-scrolling:touch}
+.nt{cursor:pointer}
+.nt.act{border-color:var(--v);box-shadow:0 0 0 2px var(--soft)}
+.nt p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.nt .top{display:flex;justify-content:space-between;gap:8px;font-weight:700;font-size:.82rem;margin-bottom:4px}
+.nt .chip{color:#0e7a5f}.nt .chip.no{color:#b42318}
+.phl{background:#e8f8f2;color:#0b5d48;border-radius:10px;padding:10px 12px;font-size:.85rem;margin-bottom:10px}
+.phl:empty{display:none}.phl ul{margin:6px 0 0;padding-left:18px}
+.choose{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:0 0 16px;font-size:.95rem;text-align:center}
+ul.l{margin:0 0 6px;padding-left:20px;font-size:.92rem}
+main{max-width:680px;margin:-24px auto 0;padding:0 14px 40px}
+section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+h2{margin:0 0 4px;font-size:1.1rem;color:var(--v);display:flex;gap:10px;align-items:center}
+h2 b{background:var(--v);color:#fff;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:.85rem;flex:none}
+.h{color:var(--mut);font-size:.85rem;margin:0 0 14px}
+label.f{display:block;font-weight:600;font-size:.88rem;margin:12px 0 4px}
+input[type=text],input[type=tel],input[type=email],input[type=url],input[type=number],textarea,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus,textarea:focus{outline:2px solid var(--v);border-color:transparent}
+textarea{min-height:76px;resize:vertical}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media(max-width:520px){.g{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chips label{cursor:pointer}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips span{display:inline-block;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:.88rem;transition:.15s}
+.chips input:checked+span{background:var(--v);color:#fff;border-color:var(--v)}
+.chips input:focus-visible+span{outline:2px solid var(--v);outline-offset:2px}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:11px 12px;border:1px solid var(--line);border-radius:12px;margin-top:8px;cursor:pointer;background:var(--bg)}
+.opt input{width:20px;height:20px;accent-color:var(--v);margin-top:2px;flex:none}
+.opt strong{display:block;font-size:.92rem}.opt small{color:var(--mut)}
+.pv{border:1px dashed var(--v);border-radius:14px;padding:14px;margin:12px 0;background:var(--soft);display:flex;gap:12px;align-items:center}
+.pv .im{width:64px;height:64px;border-radius:10px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex:none}
+.pv small{color:var(--mut)}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:14px 18px;font-weight:700}
+.main{background:linear-gradient(135deg,var(--v),#6b4df0);color:#fff;width:100%;font-size:1rem}
+a.main{display:block;text-align:center;text-decoration:none;font-weight:700;padding:14px 18px;border-radius:12px}
+.alt{background:var(--soft);color:var(--v);width:100%;margin-top:10px}
+.note{font-size:.85rem;color:var(--mut);text-align:center;margin-top:12px}
+#out{display:none;margin-top:14px}
+#out pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.82rem;max-height:260px;overflow:auto}
+footer{text-align:center;color:var(--mut);font-size:.8rem;padding:0 16px 30px}
+</style>
+</head>
+<body>
+<header>
+<h1>VENCRAFT-CI</h1>
+<div class="s">Aux côtés de ceux qui bâtissent</div>
+<a class="cta" href="https://vencraft-ci.github.io/site-officiel/" target="_blank" rel="noopener">👉 Cliquez ici : découvrez notre site officiel</a>
+<p>Remplissez cette fiche pour que nous créions votre catalogue web. Cela prend environ 5 minutes. Ce que vous ne savez pas, laissez-le vide : nous vous proposerons des idées.</p>
+</header>
+<main>
+<form id="fm" onsubmit="return false">
+
+<p class="choose">👉 <b>Choisissez ce qui vous convient</b> : parlez 🎤 ou écrivez ✍️, et cochez ce que vous voulez. Vous pouvez aussi mélanger.</p>
+
+<section class="vs">
+<h2>🎤 Pressé ? Parlez au lieu d'écrire</h2>
+<p class="h">Appuyez sur le micro et parlez : votre voix s'écrit toute seule.</p>
+<div class="vg">
+<div>
+<button type="button" class="mic" id="mic">🎤 Appuyer pour parler</button>
+<button type="button" class="pbtn" id="vprod">➕ Produit n°1</button>
+<div class="cur" id="cur">📝 Texte libre</div>
+<div class="vst" id="vst"></div>
+<textarea id="voice" rows="7" placeholder="Votre texte apparaît ici. Vous pouvez aussi écrire."></textarea>
+<div class="warn" id="warn">⚠️ Relisez et corrigez vos fautes : la dictée peut se tromper.</div>
+<div class="phot" id="phot"></div>
+<p class="vst">🔗 Vos liens (Facebook, Instagram, TikTok, Google Maps) et vos numéros : collez-les ici, ils partent aussi sur WhatsApp.</p>
+<p class="vst">💡 Le micro ne marche pas ? Appuyez dans la case et utilisez le micro 🎤 de votre clavier.</p>
+<div class="vb"><button type="button" class="alt" id="vsave">💾 Enregistrer</button><button type="button" class="alt" id="vclr">Effacer</button></div>
+</div>
+<div>
+<label class="f" style="margin-top:0">Mes textes enregistrés (<span id="cnt">0</span>)</label>
+<div id="vlist"></div>
+</div>
+</div>
+</section>
+
+<section>
+<h2><b>1</b> Votre entreprise</h2>
+<p class="h">Ces informations apparaîtront en haut de votre catalogue.</p>
+<label class="f" for="nom">Nom de l'entreprise *</label>
+<input type="text" id="nom" placeholder="Ex : Boutique Awa Style">
+<label class="f" for="slogan">Slogan (phrase d'accroche)</label>
+<input type="text" id="slogan" placeholder="Ex : L'élégance à votre portée">
+<label class="f" for="slogan2">Autre slogan ou message (optionnel)</label>
+<input type="text" id="slogan2" placeholder="Ex : Livraison rapide partout">
+<label class="f" for="act">Que vendez-vous ou quel service proposez-vous ?</label>
+<textarea id="act" rows="4" placeholder="Ce que je vends :&#10;Mon but avec ce catalogue :&#10;Ce que je veux simplifier :"></textarea>
+<div class="g">
+<div><label class="f" for="ville">Ville / quartier</label><input type="text" id="ville" placeholder="Ex : Bouaké, Koko"></div>
+<div><label class="f" for="coul">Couleurs préférées</label><input type="text" id="coul" placeholder="Ex : noir et or (ou « à vous de choisir »)"></div>
+</div>
+<label class="f" for="hor">Horaires d'ouverture</label>
+<input type="text" id="hor" placeholder="Ex : Lun-Sam, 8h à 19h">
+</section>
+
+<section>
+<h2><b>2</b> Contacts et réseaux sociaux</h2>
+<p class="h">Collez vos liens ici, ou dans la case 🎤 tout en haut : tout part sur WhatsApp.</p>
+<div class="g">
+<div><label class="f" for="wa">WhatsApp (reçoit les commandes) *</label><input type="tel" id="wa" placeholder="+225 ..."></div>
+<div><label class="f" for="tel">Téléphone (si différent)</label><input type="tel" id="tel" placeholder="+225 ..."></div>
+</div>
+<label class="f" for="mail">Email (optionnel)</label><input type="email" id="mail" placeholder="vous@exemple.com">
+<label class="f" for="maps">Localisation : lien Google Maps *</label><input type="url" id="maps" placeholder="https://maps.app.goo.gl/...">
+<a class="lk" href="https://www.google.com/maps" target="_blank" rel="noopener">📍 Ouvrir Google Maps (cherchez votre boutique, puis « Partager » et « Copier le lien »)</a>
+<label class="f" for="adr">Adresse ou repère (optionnel)</label><input type="text" id="adr" placeholder="Ex : face à la pharmacie ...">
+<label class="f" for="fb">Facebook (optionnel)</label><input type="url" id="fb" placeholder="https://facebook.com/...">
+<label class="f" for="ig">Instagram (optionnel)</label><input type="url" id="ig" placeholder="https://instagram.com/...">
+<label class="f" for="tt">TikTok (optionnel)</label><input type="url" id="tt" placeholder="https://tiktok.com/@...">
+<label class="f" for="yt">Chaîne YouTube ou autre lien (optionnel)</label><input type="url" id="yt" placeholder="https://...">
+</section>
+
+<section>
+<h2><b>3</b> Catégories de produits</h2>
+<p class="h">Cochez celles qui vous conviennent, ajoutez les vôtres, ou laissez-nous vous proposer.</p>
+<div class="chips" id="cats"></div>
+<label class="f" for="cat2">Vos propres catégories (séparées par une virgule)</label>
+<input type="text" id="cat2" placeholder="Ex : Pagnes, Sacs, Chaussures">
+<label class="opt"><input type="checkbox" id="catvc"><span><strong>Vous choisissez à ma place</strong><small>Nous proposerons les catégories selon votre activité.</small></span></label>
+<label class="f" for="nb">Nombre approximatif de produits à afficher</label>
+<select id="nb"><option value="">Choisir</option><option>10 à 20</option><option>20 à 40</option><option>40 à 100</option><option>Plus de 100</option></select>
+</section>
+
+<section>
+<h2><b>4</b> La fiche de chaque produit</h2>
+<p class="h">Voici ce que vos clients verront. Choisissez ce qui vous convient.</p>
+<div class="pv"><div class="im">🛍️</div><div><strong>Nom du produit</strong><br><small>Image, description, prix et boutons d'action</small></div></div>
+<div id="fp"></div>
+</section>
+
+<section>
+<h2><b>5</b> Livraison et paiement</h2>
+<p class="h">Choisissez ce qui vous convient. Vos clients commandent avec un panier : la commande arrive directement sur votre WhatsApp.</p>
+<label class="f">Quelles options de livraison proposez-vous ?</label>
+<div class="chips" id="liv"></div>
+<label class="f" for="frais">Frais de livraison (optionnel)</label>
+<input type="text" id="frais" placeholder="Ex : 1 000 F en ville, 3 000 F hors ville">
+<label class="f">Modes de paiement acceptés</label>
+<div class="chips" id="pay"></div>
+<label class="f" for="payo">Autre moyen de paiement (optionnel)</label>
+<input type="text" id="payo" placeholder="Ex : virement">
+<label class="f" for="notes">Autre chose à nous dire ?</label>
+<textarea id="notes" placeholder="Demandes particulières, exemples de sites que vous aimez..."></textarea>
+</section>
+
+<section>
+<h2><b>6</b> Logo, photos, prix et descriptions</h2>
+<p class="h">Après l'envoi de cette fiche, envoyez-nous sur WhatsApp :</p>
+<ul class="l"><li>votre logo ;</li><li>la photo de chaque produit, avec son numéro (1, 2, 3…) ou son prix écrit dans le message.</li></ul>
+<label class="f">Pour la description de vos produits, quelle est votre situation ?</label>
+<label class="opt"><input type="radio" name="dm" value="Produits faciles à trouver sur Google : Vencraft-CI cherche les descriptions"><span><strong>Mes produits sont faciles à trouver sur Google</strong><small>Nous cherchons les descriptions pour vous.</small></span></label>
+<label class="opt"><input type="radio" name="dm" value="Produits personnels : le client envoie lui-même les descriptions"><span><strong>Mes produits sont personnels (fabrication maison, création, produit rare)</strong><small>Vous nous envoyez une description de chaque produit (matière, taille, couleur, usage...). Sans elle, nous ne pouvons pas bien le présenter.</small></span></label>
+<label class="opt"><input type="radio" name="dm" value="Un peu des deux : descriptions à chercher pour certains, à envoyer pour les autres"><span><strong>Un peu des deux</strong><small>Nous cherchons ce qui est trouvable, vous décrivez le reste.</small></span></label>
+<label class="opt"><input type="checkbox" id="photoLater"><span><strong>Je n'ai pas encore de bonnes photos</strong><small>Nous vous guiderons pour les prendre avec votre téléphone.</small></span></label>
+</section>
+
+<a class="main" id="send" href="https://wa.me/2250151030957" target="_blank" rel="noopener">Envoyer mes informations sur WhatsApp</a>
+<button class="alt" id="copy" type="button">Copier le résumé</button>
+<div id="out"><div class="phl" id="ph"></div><pre id="txt"></pre></div>
+<p class="note" id="err" role="alert"></p>
+</form>
+</main>
+<footer>Vencraft-CI · Aux côtés de ceux qui bâtissent<br>WhatsApp : 01 51 03 09 57</footer>
+
+<script>
+var NUM="2250151030957";
+function chips(id,name,items,checked){
+  document.getElementById(id).innerHTML=items.map(function(t){
+    return '<label><input type="checkbox" name="'+name+'" value="'+t+'"'+(checked&&checked.indexOf(t)>-1?' checked':'')+'><span>'+t+'</span></label>';
+  }).join('');
+}
+chips('cats','cat',['Vêtements','Chaussures','Sacs et accessoires','Beauté et cosmétiques','Alimentation','Restauration','Électronique','Téléphones et accessoires','Maison et décoration','Bâtiment et matériaux','Services','Autre']);
+chips('liv','liv',['Livraison à domicile','Retrait en boutique','Livraison hors ville']);
+chips('pay','pay',['Espèces','Orange Money','MTN MoMo','Moov Money','Wave','Paiement à la livraison']);
+var FP=[
+['Image du produit','Une ou plusieurs photos',1],
+['Description','Texte court sous le nom du produit',1],
+['Prix','Affiché en FCFA',1],
+['Bouton « Ajouter au panier »','Le client remplit ses infos et le panier envoie la commande sur votre WhatsApp',1],
+['Partage sur WhatsApp','Le client envoie le produit à ses contacts',1],
+['Partage sur Facebook et copie du lien','Pour faire connaître vos produits',0],
+['Favoris ❤️','Les visiteurs gardent leurs produits préférés',0],
+['Barre de recherche','Retrouver un produit rapidement',0],
+];
+document.getElementById('fp').innerHTML=FP.map(function(p,i){
+  return '<label class="opt"><input type="checkbox" name="fp" value="'+p[0]+'"'+(p[2]?' checked':'')+'><span><strong>'+p[0]+'</strong><small>'+p[1]+'</small></span></label>';
+}).join('');
+function vals(n){return Array.prototype.map.call(document.querySelectorAll('input[name="'+n+'"]:checked'),function(e){return e.value;});}
+function v(id){return document.getElementById(id).value.trim();}
+function build(){
+  var cats=vals('cat'); if(v('cat2'))cats.push(v('cat2'));
+  var L=["*FICHE CATALOGUE WEB – VENCRAFT-CI*","",
+  vmsg(),"*ENTREPRISE*","Nom : "+v('nom'),"Slogan : "+(v('slogan')||"-"),"Autre slogan : "+(v('slogan2')||"-"),
+  "Activité, but et besoins : "+(v('act')||"-"),"Ville : "+(v('ville')||"-"),"Couleurs : "+(v('coul')||"-"),"Horaires : "+(v('hor')||"-"),"",
+  "*CONTACTS ET RÉSEAUX*","WhatsApp : "+v('wa'),"Téléphone : "+(v('tel')||"-"),"Email : "+(v('mail')||"-"),"Google Maps : "+v('maps'),"Adresse / repère : "+(v('adr')||"-"),
+  "Facebook : "+(v('fb')||"-"),"Instagram : "+(v('ig')||"-"),"TikTok : "+(v('tt')||"-"),"Autre : "+(v('yt')||"-"),"",
+  "*CATÉGORIES*",(document.getElementById('catvc').checked?"À proposer par Vencraft-CI":(cats.join(", ")||"-")),
+  (document.getElementById('catvc').checked&&cats.length?"Idées du client : "+cats.join(", "):""),
+  "Nombre de produits : "+(v('nb')||"-"),"",
+  "*FICHE PRODUIT*",vals('fp').map(function(x){return "- "+x;}).join("\n"),"",
+  "*COMMANDE ET PAIEMENT*","Commande : panier envoyé sur WhatsApp","Livraison proposée : "+(vals('liv').join(", ")||"-"),"Frais de livraison : "+(v('frais')||"-"),"Paiement : "+(vals('pay').join(", ")||"-")+(v('payo')?", "+v('payo'):""),
+  "Remarques : "+(v('notes')||"-"),"",
+  "*LOGO, PHOTOS ET DESCRIPTIONS*","Logo et photos avec prix : "+(document.getElementById('photoLater').checked?"pas encore prêtes, besoin d'aide":"envoyés sur WhatsApp"),"Descriptions : "+(document.querySelector('input[name="dm"]:checked')||{value:"-"}).value];
+  return L.filter(function(x){return x!==null;}).join("\n");
+}
+function check(){
+  var e=document.getElementById('err'),c=collect(),txt=c.P.concat(c.N).map(function(x){return x.t;}).join(' ');
+  var hasLink=/https?:\/\/|www\.|maps\./i.test(txt),hasTel=/\d[\d\s.\-]{7,}\d/.test(txt),miss=[];
+  if(!v('nom'))miss.push("le nom de l'entreprise");
+  if(!v('wa')&&!hasTel)miss.push("le numéro WhatsApp");
+  if(!v('maps')&&!hasLink)miss.push("le lien Google Maps");
+  if(miss.length){e.textContent="Il manque : "+miss.join(", ")+". Écrivez-le dans la case prévue ou collez-le dans votre texte en haut.";return false;}
+  e.textContent="";return true;
+}
+function show(t){document.getElementById('txt').textContent=t;document.getElementById('out').style.display='block';showPhotos();}
+document.getElementById('send').addEventListener('click',function(ev){
+  if(!check()){ev.preventDefault();return;}
+  stopRec();var t=build(); show(t);
+  this.href="https://wa.me/"+NUM+"?text="+encodeURIComponent(t);
+  var er=document.getElementById('err');
+  try{if(navigator.clipboard)navigator.clipboard.writeText(t);}catch(x){}
+  er.textContent="Dans WhatsApp, appuyez sur « Envoyer ». Le résumé est aussi copié : si le message est coupé ou ne s'ouvre pas, collez-le dans WhatsApp au 01 51 03 09 57.";
+});
+document.getElementById('copy').onclick=function(){
+  if(!check())return; var t=build(); show(t);
+  var e=document.getElementById('err');
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){e.textContent="Résumé copié. Collez-le dans WhatsApp.";},function(){e.textContent="Copiez le texte ci-dessus.";});}
+  else{e.textContent="Copiez le texte ci-dessus.";}
+};
+
+/* ---- Dictée vocale, textes et produits ---- */
+function $(i){return document.getElementById(i);}
+var IK='vc_items',DK='vc_draft',cur={kind:'n',num:0,id:null},listening=false,rec=null,base='',tmo=null;
+var ta=$('voice'),mic=$('mic'),vst=$('vst'),vl=$('vlist'),pb=$('vprod'),curEl=$('cur'),warn=$('warn'),phEl=$('phot');
+function load(){var a=null;try{a=JSON.parse(localStorage.getItem(IK)||'null');}catch(e){}
+  if(!a){a=[];try{JSON.parse(localStorage.getItem('vc_notes')||'[]').forEach(function(n){a.push({id:n.id,kind:'n',num:0,t:n.t});});}catch(e){}}
+  return a;}
+function store(a){try{localStorage.setItem(IK,JSON.stringify(a));}catch(e){vst.textContent="Enregistrement impossible sur cet appareil.";}}
+function saveD(){try{localStorage.setItem(DK,JSON.stringify({t:ta.value,kind:cur.kind,num:cur.num,id:cur.id}));}catch(e){}}
+function nextNum(){var m=0;load().forEach(function(x){if(x.kind==='p'&&x.num>m)m=x.num;});return m+1;}
+function price(t){var m=t.match(/(\d{1,3}(?:[ .]\d{3})+|\d+)\s*(?:f\s*cfa|fcfa|cfa|francs?|f)\b/i);return m?m[1]:null;}
+function warnUI(){warn.className='warn'+((listening||ta.value.trim())?' on':'');}
+function setCur(kind,num,id){
+  cur={kind:kind,num:num,id:id};
+  if(kind==='p'){
+    curEl.textContent='📦 Produit n°'+num+' : dites le nom, la description et le prix';curEl.className='cur p';
+    ta.placeholder='Nom, description, prix';
+    phEl.textContent='📸 Après l\'envoi, envoyez la photo de ce produit sur WhatsApp en écrivant « '+num+' » dans le message.';phEl.className='phot on';
+  }else{
+    curEl.textContent='📝 Texte libre';curEl.className='cur';
+    ta.placeholder='Votre texte apparaît ici. Vous pouvez aussi écrire.';phEl.className='phot';
+  }
+  pb.textContent='➕ Produit n°'+nextNum();
+}
+function commit(){
+  var t=ta.value.trim();if(!t)return false;
+  var a=load(),f=false;
+  if(cur.id){a=a.map(function(x){if(x.id===cur.id){f=true;return {id:x.id,kind:x.kind,num:x.num,t:t};}return x;});}
+  if(!f)a.push({id:Date.now(),kind:cur.kind,num:cur.kind==='p'?cur.num:0,t:t});
+  store(a);ta.value='';setCur('n',0,null);saveD();warnUI();render();return true;
+}
+function render(){
+  var a=load();vl.innerHTML='';$('cnt').textContent=a.length;
+  if(!a.length){var e=document.createElement('p');e.className='vst';e.textContent="Rien d'enregistré pour l'instant.";vl.appendChild(e);}
+  a.forEach(function(n){
+    var d=document.createElement('div');d.className='nt'+(cur.id===n.id?' act':'');
+    var top=document.createElement('div');top.className='top';
+    var h=document.createElement('span');h.textContent=n.kind==='p'?'📦 Produit n°'+n.num:'📝 Texte';top.appendChild(h);
+    if(n.kind==='p'){var pr=price(n.t),c=document.createElement('span');c.className='chip'+(pr?'':' no');c.textContent=pr?'💰 '+pr+' F':'⚠️ prix ?';top.appendChild(c);}
+    d.appendChild(top);
+    var p=document.createElement('p');p.textContent=n.t;d.appendChild(p);
+    var b1=document.createElement('button');b1.type='button';b1.textContent='🎤 Continuer';
+    b1.onclick=function(ev){ev.stopPropagation();openItem(n.id,true);};
+    var b2=document.createElement('button');b2.type='button';b2.textContent='🗑 Supprimer';
+    b2.onclick=function(ev){ev.stopPropagation();removeItem(n.id);};
+    d.appendChild(b1);d.appendChild(b2);
+    d.onclick=function(){openItem(n.id,false);};
+    vl.appendChild(d);
+  });
+  pb.textContent='➕ Produit n°'+nextNum();
+}
+function openItem(id,cont){
+  stopRec();commit();
+  var it=load().filter(function(x){return x.id===id;})[0];if(!it)return;
+  ta.value=it.t;setCur(it.kind,it.num,it.id);saveD();warnUI();render();
+  vst.textContent=cont?'':"Texte affiché. Relisez-le, modifiez-le, puis appuyez sur Enregistrer.";
+  ta.scrollTop=0;try{ta.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){}
+  if(cont)startRec();
+}
+function removeItem(id){
+  store(load().filter(function(x){return x.id!==id;}));
+  if(cur.id===id){stopRec();ta.value='';setCur('n',0,null);saveD();warnUI();}
+  render();
+}
+function ui(on){listening=on;mic.className='mic'+(on?' on':'');mic.textContent=on?'⏹ Arrêter':'🎤 Appuyer pour parler';warnUI();}
+function stopRec(){if(rec&&listening){try{rec.stop();}catch(e){}}}
+function fallback(msg,tip){ui(false);vst.textContent=msg+(tip===false?"":" Appuyez dans la case et utilisez le micro 🎤 de votre clavier.");if(tip!==false)ta.focus();}
+function startRec(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){fallback("La dictée n'est pas disponible dans ce navigateur.");return;}
+  try{rec=new SR();}catch(e){fallback("La dictée ne démarre pas.");return;}
+  rec.lang='fr-FR';rec.continuous=true;rec.interimResults=true;
+  base=ta.value.trim()?ta.value.replace(/\s+$/,'')+' ':'';
+  var started=false;
+  rec.onstart=function(){started=true;clearTimeout(tmo);ui(true);vst.textContent="Je vous écoute… parlez.";};
+  rec.onresult=function(e){var t='';for(var i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;ta.value=base+t;saveD();};
+  rec.onerror=function(e){
+    clearTimeout(tmo);
+    if(e.error==='no-speech'){fallback("Je n'ai rien entendu. Réessayez.",false);}
+    else if(e.error==='aborted'){ui(false);}
+    else if(e.error==='not-allowed'||e.error==='service-not-allowed'){fallback("Le micro est bloqué ici : autorisez-le, ou ouvrez le formulaire dans Chrome.");}
+    else{fallback("La dictée a échoué.");}
+  };
+  rec.onend=function(){clearTimeout(tmo);if(listening){ui(false);saveD();vst.textContent="Dictée arrêtée. Relisez et corrigez, puis enregistrez.";}};
+  vst.textContent="Ouverture du micro… autorisez-le si le navigateur le demande.";
+  tmo=setTimeout(function(){if(!started){try{rec.abort();}catch(e){}fallback("Le micro ne répond pas.");}},12000);
+  try{rec.start();}catch(e){clearTimeout(tmo);fallback("Impossible de démarrer le micro.");}
+}
+mic.onclick=function(){if(listening){stopRec();return;}startRec();};
+pb.onclick=function(){stopRec();commit();setCur('p',nextNum(),null);ta.value='';saveD();warnUI();vst.textContent='';startRec();};
+ta.addEventListener('input',function(){saveD();warnUI();});
+$('vsave').onclick=function(){stopRec();if(!commit()){vst.textContent="Rien à enregistrer.";return;}vst.textContent="✅ Enregistré. Appuyez sur « Produit » pour le suivant, ou continuez.";};
+$('vclr').onclick=function(){stopRec();ta.value='';setCur('n',0,null);saveD();warnUI();vst.textContent="";render();};
+function collect(){
+  var it=load(),d=ta.value.trim();
+  if(d){var f=false;
+    it=it.map(function(x){if(cur.id&&x.id===cur.id){f=true;return {id:x.id,kind:x.kind,num:x.num,t:d};}return x;});
+    if(!f)it.push({id:0,kind:cur.kind,num:cur.kind==='p'?cur.num:0,t:d});}
+  return {P:it.filter(function(x){return x.kind==='p';}).sort(function(a,b){return a.num-b.num;}),N:it.filter(function(x){return x.kind!=='p';})};
+}
+function vmsg(){
+  var c=collect(),L=[];
+  if(c.P.length){L.push("*PRODUITS* (photos à recevoir avec leur numéro)");
+    c.P.forEach(function(x){var pr=price(x.t);L.push("Produit "+x.num+" : "+x.t+" (prix détecté : "+(pr?pr+" F":"non précisé")+")");});L.push("");}
+  if(c.N.length){L.push("*NOTES DICTÉES*");c.N.forEach(function(x,i){L.push((i+1)+". "+x.t);});L.push("");}
+  return L.join("\n");
+}
+function showPhotos(){
+  var c=collect(),h='';
+  if(c.P.length){h='<strong>📸 Étape suivante : envoyez maintenant sur WhatsApp la photo de chaque produit (et votre logo), avec le numéro écrit dans le message :</strong><ul>'+c.P.map(function(x){return '<li>Produit n°'+x.num+' → écrivez « '+x.num+' »</li>';}).join('')+'</ul>';}
+  $('ph').innerHTML=h;
+}
+try{
+  var raw=localStorage.getItem(DK),dr=null;
+  try{dr=JSON.parse(raw||'null');}catch(e){if(raw&&raw.charAt(0)!=='{')ta.value=raw;}
+  if(dr&&dr.t){ta.value=dr.t;setCur(dr.kind||'n',dr.num||0,dr.id||null);}else setCur('n',0,null);
+}catch(e){setCur('n',0,null);}
+warnUI();render();
+</script>
+</body>
+</html>
