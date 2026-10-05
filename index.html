@@ -63,6 +63,9 @@ label.f{display:block;font-weight:600;font-size:.88rem;margin:12px 0 4px}
 input[type=text],input[type=tel],input[type=email],input[type=url],input[type=number],textarea,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
 input:focus,textarea:focus{outline:2px solid var(--v);border-color:transparent}
 textarea{min-height:76px;resize:vertical}
+#voice{height:190px;min-height:190px;max-height:190px;resize:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;field-sizing:fixed}
+#vlist{scroll-behavior:smooth;overscroll-behavior:contain}
+#more a{margin-top:8px}
 .g{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
 @media(max-width:520px){.g{grid-template-columns:1fr}}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
@@ -205,6 +208,7 @@ footer{text-align:center;color:var(--mut);font-size:.8rem;padding:0 16px 30px}
 <a class="main" id="send" href="https://wa.me/2250151030957" target="_blank" rel="noopener">Envoyer mes informations sur WhatsApp</a>
 <button class="alt" id="copy" type="button">Copier le résumé</button>
 <div id="out"><div class="phl" id="ph"></div><pre id="txt"></pre></div>
+<div id="more"></div>
 <p class="note" id="err" role="alert"></p>
 </form>
 </main>
@@ -235,21 +239,49 @@ document.getElementById('fp').innerHTML=FP.map(function(p,i){
 }).join('');
 function vals(n){return Array.prototype.map.call(document.querySelectorAll('input[name="'+n+'"]:checked'),function(e){return e.value;});}
 function v(id){return document.getElementById(id).value.trim();}
-function build(){
-  var cats=vals('cat'); if(v('cat2'))cats.push(v('cat2'));
-  var L=["*FICHE CATALOGUE WEB – VENCRAFT-CI*","",
-  vmsg(),"*ENTREPRISE*","Nom : "+v('nom'),"Slogan : "+(v('slogan')||"-"),"Autre slogan : "+(v('slogan2')||"-"),
-  "Activité, but et besoins : "+(v('act')||"-"),"Ville : "+(v('ville')||"-"),"Couleurs : "+(v('coul')||"-"),"Horaires : "+(v('hor')||"-"),"",
-  "*CONTACTS ET RÉSEAUX*","WhatsApp : "+v('wa'),"Téléphone : "+(v('tel')||"-"),"Email : "+(v('mail')||"-"),"Google Maps : "+v('maps'),"Adresse / repère : "+(v('adr')||"-"),
-  "Facebook : "+(v('fb')||"-"),"Instagram : "+(v('ig')||"-"),"TikTok : "+(v('tt')||"-"),"Autre : "+(v('yt')||"-"),"",
-  "*CATÉGORIES*",(document.getElementById('catvc').checked?"À proposer par Vencraft-CI":(cats.join(", ")||"-")),
-  (document.getElementById('catvc').checked&&cats.length?"Idées du client : "+cats.join(", "):""),
-  "Nombre de produits : "+(v('nb')||"-"),"",
-  "*FICHE PRODUIT*",vals('fp').map(function(x){return "- "+x;}).join("\n"),"",
-  "*COMMANDE ET PAIEMENT*","Commande : panier envoyé sur WhatsApp","Livraison proposée : "+(vals('liv').join(", ")||"-"),"Frais de livraison : "+(v('frais')||"-"),"Paiement : "+(vals('pay').join(", ")||"-")+(v('payo')?", "+v('payo'):""),
-  "Remarques : "+(v('notes')||"-"),"",
-  "*LOGO, PHOTOS ET DESCRIPTIONS*","Logo et photos avec prix : "+(document.getElementById('photoLater').checked?"pas encore prêtes, besoin d'aide":"envoyés sur WhatsApp"),"Descriptions : "+(document.querySelector('input[name="dm"]:checked')||{value:"-"}).value];
-  return L.filter(function(x){return x!==null;}).join("\n");
+function blocks(){
+  var B=[],c=collect(),cats=vals('cat');if(v('cat2'))cats.push(v('cat2'));
+  function ln(l,x){return x?"• "+l+" : "+x:null;}
+  function blk(t,L){L=L.filter(Boolean);if(L.length)B.push("*"+t+"*\n"+L.join("\n"));}
+  B.push("📋 *FICHE CATALOGUE WEB – VENCRAFT-CI*");
+  c.P.forEach(function(x,i){var pr=price(x.t);
+    B.push((i===0?"🛒 *PRODUITS DICTÉS* (photos à envoyer avec leur numéro)\n\n":"")+"📦 *Produit n°"+x.num+"*\n"+x.t+"\n💰 Prix détecté : "+(pr?pr+" F":"non précisé"));});
+  c.N.forEach(function(x,i){B.push((i===0?"🎤 *NOTES DICTÉES / ÉCRITES*\n\n":"")+"📝 *Note "+(i+1)+"*\n"+x.t);});
+  blk("🏢 ENTREPRISE",[ln("Nom",v('nom')||"à préciser"),ln("Slogan",v('slogan')),ln("Autre slogan",v('slogan2')),ln("Activité / besoins",v('act')),ln("Ville",v('ville')),ln("Couleurs",v('coul')),ln("Horaires",v('hor'))]);
+  blk("📞 CONTACTS ET RÉSEAUX",[ln("WhatsApp",v('wa')),ln("Téléphone",v('tel')),ln("Email",v('mail')),ln("Google Maps",v('maps')),ln("Adresse / repère",v('adr')),ln("Facebook",v('fb')),ln("Instagram",v('ig')),ln("TikTok",v('tt')),ln("Autre lien",v('yt'))]);
+  var vc=document.getElementById('catvc').checked;
+  blk("🗂️ CATÉGORIES",[vc?"• À proposer par Vencraft-CI":(cats.length?"• "+cats.join(", "):null),(vc&&cats.length)?"• Idées du client : "+cats.join(", "):null,ln("Nombre de produits",v('nb'))]);
+  var fp=vals('fp');if(fp.length)B.push("*🛍️ FICHE PRODUIT*\n"+fp.map(function(x){return "• "+x;}).join("\n"));
+  blk("🚚 COMMANDE ET PAIEMENT",["• Commande : panier envoyé sur WhatsApp",ln("Livraison",vals('liv').join(", ")),ln("Frais de livraison",v('frais')),ln("Paiement",vals('pay').concat(v('payo')?[v('payo')]:[]).join(", ")),ln("Remarques",v('notes'))]);
+  var dm=document.querySelector('input[name="dm"]:checked');
+  blk("📸 LOGO, PHOTOS ET DESCRIPTIONS",["• Logo et photos avec prix : "+(document.getElementById('photoLater').checked?"pas encore prêtes, besoin d'aide":"envoyés sur WhatsApp"),dm?"• Descriptions : "+dm.value:null]);
+  return B;
+}
+function build(){return blocks().join("\n\n");}
+function enc(x){return encodeURIComponent(x).length;}
+function splitBig(t,max){
+  if(enc(t)<=max)return [t];
+  var out=[],cur='';
+  t.split(/(\s+)/).forEach(function(tok){
+    while(enc(tok)>max){var h=tok.slice(0,300);tok=tok.slice(300);if(cur){out.push(cur);cur='';}out.push(h);}
+    if(cur&&enc(cur+tok)>max){out.push(cur.replace(/\s+$/,''));cur=tok.replace(/^\s+/,'');}else cur+=tok;
+  });
+  if(cur.trim())out.push(cur.trim());return out;
+}
+function pack(B,max){
+  var parts=[],cur='';
+  B.forEach(function(b){splitBig(b,max).forEach(function(pc){
+    if(cur&&enc(cur+"\n\n"+pc)>max){parts.push(cur);cur=pc;}else cur=cur?cur+"\n\n"+pc:pc;
+  });});
+  if(cur)parts.push(cur);return parts;
+}
+function makeParts(){
+  var B=blocks(),parts=pack(B,1800);
+  if(parts.length>1){
+    parts=pack(B,1550);var n=parts.length,nm=v('nom');
+    parts=parts.map(function(t,i){return (i===0?"":"📋 *VENCRAFT-CI"+(nm?" – "+nm:"")+" (suite)*\n\n")+t+"\n\n_(Partie "+(i+1)+"/"+n+")_";});
+  }
+  return parts;
 }
 function check(){
   var e=document.getElementById('err'),c=collect(),txt=c.P.concat(c.N).map(function(x){return x.t;}).join(' ');
@@ -257,20 +289,35 @@ function check(){
   if(!v('nom'))miss.push("le nom de l'entreprise");
   if(!v('wa')&&!hasTel)miss.push("le numéro WhatsApp");
   if(!v('maps')&&!hasLink)miss.push("le lien Google Maps");
-  if(miss.length){e.textContent="Il manque : "+miss.join(", ")+". Écrivez-le dans la case prévue ou collez-le dans votre texte en haut.";return false;}
-  e.textContent="";return true;
+  var empty=!c.P.length&&!c.N.length&&!v('nom')&&!v('wa')&&!v('maps')&&!v('act')&&!v('slogan');
+  if(empty){e.textContent="Rien à envoyer : parlez, écrivez ou remplissez au moins une case.";return {ok:false,miss:miss};}
+  e.textContent=miss.length?"⚠️ Il manque : "+miss.join(", ")+" (envoyé quand même, vous pourrez le compléter sur WhatsApp).":"";
+  return {ok:true,miss:miss};
 }
-function show(t){document.getElementById('txt').textContent=t;document.getElementById('out').style.display='block';showPhotos();}
+function show(t){document.getElementById('txt').textContent=t;document.getElementById('out').style.display='block';document.getElementById('more').innerHTML='';showPhotos();}
+function waUrl(t){return "https://wa.me/"+NUM+"?text="+encodeURIComponent(t);}
 document.getElementById('send').addEventListener('click',function(ev){
-  if(!check()){ev.preventDefault();return;}
-  stopRec();var t=build(); show(t);
-  this.href="https://wa.me/"+NUM+"?text="+encodeURIComponent(t);
-  var er=document.getElementById('err');
-  try{if(navigator.clipboard)navigator.clipboard.writeText(t);}catch(x){}
-  er.textContent="Dans WhatsApp, appuyez sur « Envoyer ». Le résumé est aussi copié : si le message est coupé ou ne s'ouvre pas, collez-le dans WhatsApp au 01 51 03 09 57.";
+  ev.preventDefault();
+  var ck=check();if(!ck.ok)return;
+  stopRec();
+  var full=build(),parts=makeParts(),er=document.getElementById('err'),mo=document.getElementById('more');
+  show(full);
+  try{if(navigator.clipboard)navigator.clipboard.writeText(full);}catch(x){}
+  var html='';
+  if(parts.length>1){
+    html+='<p class="note"><b>Votre fiche est longue : elle part en '+parts.length+' messages WhatsApp.</b><br>Envoyez la partie 1, revenez ici, puis appuyez sur la suite.</p>';
+    parts.forEach(function(t,i){html+='<a class="'+(i?'alt':'main')+'" style="display:block;text-align:center;text-decoration:none;padding:14px" href="'+waUrl(t)+'" target="_blank" rel="noopener">'+(i?'➡️ Envoyer la partie '+(i+1)+'/'+parts.length:'📲 Partie 1/'+parts.length+' (déjà ouverte)')+'</a>';});
+  }else{
+    html+='<a class="alt" style="display:block;text-align:center;text-decoration:none;padding:14px" href="'+waUrl(parts[0])+'" target="_blank" rel="noopener">📲 WhatsApp ne s\'est pas ouvert ? Appuyez ici</a>';
+  }
+  mo.innerHTML=html;
+  var w=null;try{w=window.open(waUrl(parts[0]),'_blank');}catch(x){}
+  if(!w){window.location.href=waUrl(parts[0]);}
+  er.textContent=(ck.miss.length?"⚠️ Il manque : "+ck.miss.join(", ")+". ":"")+"Dans WhatsApp, appuyez sur « Envoyer ». Le résumé complet est aussi copié : si besoin, collez-le dans WhatsApp au 01 51 03 09 57.";
+  try{mo.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(x){}
 });
 document.getElementById('copy').onclick=function(){
-  if(!check())return; var t=build(); show(t);
+  if(!check().ok)return; var t=build(); show(t);
   var e=document.getElementById('err');
   if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){e.textContent="Résumé copié. Collez-le dans WhatsApp.";},function(){e.textContent="Copiez le texte ci-dessus.";});}
   else{e.textContent="Copiez le texte ci-dessus.";}
@@ -376,7 +423,7 @@ function startRec(silent){
   base=ta.value.trim()?ta.value.replace(/\s+$/,'')+' ':'';
   var started=false;
   rec.onstart=function(){if(my!==sid)return;started=true;recActive=true;clearTimeout(tmo);ui(true);vst.textContent="Je vous écoute… parlez. Appuyez sur « Arrêter » quand vous avez fini.";};
-  rec.onresult=function(e){if(my!==sid)return;ta.value=base+cleanTranscript(e.results);saveD();};
+  rec.onresult=function(e){if(my!==sid)return;ta.value=base+cleanTranscript(e.results);ta.scrollTop=ta.scrollHeight;saveD();};
   rec.onerror=function(e){
     if(my!==sid)return;
     clearTimeout(tmo);
