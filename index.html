@@ -341,9 +341,13 @@ function removeItem(id){
   render();
 }
 function ui(on){listening=on;mic.className='mic'+(on?' on':'');mic.textContent=on?'⏹ Arrêter':'🎤 Appuyer pour parler';warnUI();}
-function stopRec(){if(rec&&listening){try{rec.stop();}catch(e){}}}
-function fallback(msg,tip){ui(false);vst.textContent=msg+(tip===false?"":" Appuyez dans la case et utilisez le micro 🎤 de votre clavier.");if(tip!==false)ta.focus();}
-var sid=0;
+function stopRec(){
+  want=false;clearTimeout(rst);
+  if(recActive&&rec){try{rec.stop();}catch(e){}}
+  else if(listening){ui(false);saveD();vst.textContent="Dictée arrêtée. Relisez et corrigez, puis enregistrez.";}
+}
+function fallback(msg,tip){want=false;clearTimeout(rst);ui(false);vst.textContent=msg+(tip===false?"":" Appuyez dans la case et utilisez le micro 🎤 de votre clavier.");if(tip!==false)ta.focus();}
+var sid=0,want=false,recActive=false,rst=null;
 /* Anti-doublon : fusionne les segments de dictée en retirant ce qui se répète */
 function mergeSeg(acc,seg){
   var a=acc.split(/\s+/).filter(Boolean),b=seg.split(/\s+/).filter(Boolean);
@@ -361,8 +365,9 @@ function cleanTranscript(results){
   for(var i=0;i<results.length;i++){acc=mergeSeg(acc,results[i][0].transcript.trim());}
   return acc;
 }
-function startRec(){
+function startRec(silent){
   if(rec){try{rec.onstart=rec.onresult=rec.onerror=rec.onend=null;rec.abort();}catch(e){}rec=null;}
+  recActive=false;clearTimeout(rst);want=true;
   var my=++sid;
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){fallback("La dictée n'est pas disponible dans ce navigateur.");return;}
@@ -370,18 +375,19 @@ function startRec(){
   rec.lang='fr-FR';rec.continuous=true;rec.interimResults=true;
   base=ta.value.trim()?ta.value.replace(/\s+$/,'')+' ':'';
   var started=false;
-  rec.onstart=function(){if(my!==sid)return;started=true;clearTimeout(tmo);ui(true);vst.textContent="Je vous écoute… parlez.";};
+  rec.onstart=function(){if(my!==sid)return;started=true;recActive=true;clearTimeout(tmo);ui(true);vst.textContent="Je vous écoute… parlez. Appuyez sur « Arrêter » quand vous avez fini.";};
   rec.onresult=function(e){if(my!==sid)return;ta.value=base+cleanTranscript(e.results);saveD();};
   rec.onerror=function(e){
     if(my!==sid)return;
     clearTimeout(tmo);
-    if(e.error==='no-speech'){fallback("Je n'ai rien entendu. Réessayez.",false);}
-    else if(e.error==='aborted'){ui(false);}
+    if(e.error==='no-speech'||e.error==='aborted'){/* on laisse onend relancer */}
     else if(e.error==='not-allowed'||e.error==='service-not-allowed'){fallback("Le micro est bloqué ici : autorisez-le, ou ouvrez le formulaire dans Chrome.");}
     else{fallback("La dictée a échoué.");}
   };
-  rec.onend=function(){if(my!==sid)return;clearTimeout(tmo);if(listening){ui(false);saveD();vst.textContent="Dictée arrêtée. Relisez et corrigez, puis enregistrez.";}};
-  vst.textContent="Ouverture du micro… autorisez-le si le navigateur le demande.";
+  rec.onend=function(){if(my!==sid)return;recActive=false;clearTimeout(tmo);
+    if(want&&started){rst=setTimeout(function(){if(want)startRec(true);},250);return;}
+    if(listening){ui(false);saveD();vst.textContent="Dictée arrêtée. Relisez et corrigez, puis enregistrez.";}};
+  if(!silent)vst.textContent="Ouverture du micro… autorisez-le si le navigateur le demande.";
   tmo=setTimeout(function(){if(!started){try{rec.abort();}catch(e){}fallback("Le micro ne répond pas.");}},12000);
   try{rec.start();}catch(e){clearTimeout(tmo);fallback("Impossible de démarrer le micro.");}
 }
