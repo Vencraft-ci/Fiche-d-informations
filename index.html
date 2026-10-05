@@ -63,8 +63,9 @@ label.f{display:block;font-weight:600;font-size:.88rem;margin:12px 0 4px}
 input[type=text],input[type=tel],input[type=email],input[type=url],input[type=number],textarea,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
 input:focus,textarea:focus{outline:2px solid var(--v);border-color:transparent}
 textarea{min-height:76px;resize:vertical}
-#voice{height:190px;min-height:190px;max-height:190px;resize:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;field-sizing:fixed}
-#vlist{scroll-behavior:smooth;overscroll-behavior:contain}
+#voice{height:190px;min-height:190px;max-height:190px;resize:none;overflow-y:auto;overscroll-behavior:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;field-sizing:fixed}
+#vlist{overscroll-behavior:auto;touch-action:pan-y}
+body.rec h2,body.rec .cta{animation:none}
 #more a{margin-top:8px}
 .g{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
 @media(max-width:520px){.g{grid-template-columns:1fr}}
@@ -225,11 +226,11 @@ chips('cats','cat',['Vêtements','Chaussures','Sacs et accessoires','Beauté et 
 chips('liv','liv',['Livraison à domicile','Retrait en boutique','Livraison hors ville']);
 chips('pay','pay',['Espèces','Orange Money','MTN MoMo','Moov Money','Wave','Paiement à la livraison']);
 var FP=[
-['Image du produit','Une ou plusieurs photos',1],
-['Description','Texte court sous le nom du produit',1],
-['Prix','Affiché en FCFA',1],
-['Bouton « Ajouter au panier »','Le client remplit ses infos et le panier envoie la commande sur votre WhatsApp',1],
-['Partage sur WhatsApp','Le client envoie le produit à ses contacts',1],
+['Image du produit','Une ou plusieurs photos',0],
+['Description','Texte court sous le nom du produit',0],
+['Prix','Affiché en FCFA',0],
+['Bouton « Ajouter au panier »','Le client remplit ses infos et le panier envoie la commande sur votre WhatsApp',0],
+['Partage sur WhatsApp','Le client envoie le produit à ses contacts',0],
 ['Partage sur Facebook et copie du lien','Pour faire connaître vos produits',0],
 ['Favoris ❤️','Les visiteurs gardent leurs produits préférés',0],
 ['Barre de recherche','Retrouver un produit rapidement',0],
@@ -247,14 +248,14 @@ function blocks(){
   c.P.forEach(function(x,i){var pr=price(x.t);
     B.push((i===0?"🛒 *PRODUITS DICTÉS* (photos à envoyer avec leur numéro)\n\n":"")+"📦 *Produit n°"+x.num+"*\n"+x.t+"\n💰 Prix détecté : "+(pr?pr+" F":"non précisé"));});
   c.N.forEach(function(x,i){B.push((i===0?"🎤 *NOTES DICTÉES / ÉCRITES*\n\n":"")+"📝 *Note "+(i+1)+"*\n"+x.t);});
-  blk("🏢 ENTREPRISE",[ln("Nom",v('nom')||"à préciser"),ln("Slogan",v('slogan')),ln("Autre slogan",v('slogan2')),ln("Activité / besoins",v('act')),ln("Ville",v('ville')),ln("Couleurs",v('coul')),ln("Horaires",v('hor'))]);
+  blk("🏢 ENTREPRISE",[ln("Nom",v('nom')),ln("Slogan",v('slogan')),ln("Autre slogan",v('slogan2')),ln("Activité / besoins",v('act')),ln("Ville",v('ville')),ln("Couleurs",v('coul')),ln("Horaires",v('hor'))]);
   blk("📞 CONTACTS ET RÉSEAUX",[ln("WhatsApp",v('wa')),ln("Téléphone",v('tel')),ln("Email",v('mail')),ln("Google Maps",v('maps')),ln("Adresse / repère",v('adr')),ln("Facebook",v('fb')),ln("Instagram",v('ig')),ln("TikTok",v('tt')),ln("Autre lien",v('yt'))]);
   var vc=document.getElementById('catvc').checked;
   blk("🗂️ CATÉGORIES",[vc?"• À proposer par Vencraft-CI":(cats.length?"• "+cats.join(", "):null),(vc&&cats.length)?"• Idées du client : "+cats.join(", "):null,ln("Nombre de produits",v('nb'))]);
   var fp=vals('fp');if(fp.length)B.push("*🛍️ FICHE PRODUIT*\n"+fp.map(function(x){return "• "+x;}).join("\n"));
-  blk("🚚 COMMANDE ET PAIEMENT",["• Commande : panier envoyé sur WhatsApp",ln("Livraison",vals('liv').join(", ")),ln("Frais de livraison",v('frais')),ln("Paiement",vals('pay').concat(v('payo')?[v('payo')]:[]).join(", ")),ln("Remarques",v('notes'))]);
+  blk("🚚 COMMANDE ET PAIEMENT",[ln("Livraison",vals('liv').join(", ")),ln("Frais de livraison",v('frais')),ln("Paiement",vals('pay').concat(v('payo')?[v('payo')]:[]).join(", ")),ln("Remarques",v('notes'))]);
   var dm=document.querySelector('input[name="dm"]:checked');
-  blk("📸 LOGO, PHOTOS ET DESCRIPTIONS",["• Logo et photos avec prix : "+(document.getElementById('photoLater').checked?"pas encore prêtes, besoin d'aide":"envoyés sur WhatsApp"),dm?"• Descriptions : "+dm.value:null]);
+  blk("📸 LOGO, PHOTOS ET DESCRIPTIONS",[document.getElementById('photoLater').checked?"• Photos : pas encore prêtes, besoin d'aide":null,dm?"• Descriptions : "+dm.value:null]);
   return B;
 }
 function build(){return blocks().join("\n\n");}
@@ -289,7 +290,7 @@ function check(){
   if(!v('nom'))miss.push("le nom de l'entreprise");
   if(!v('wa')&&!hasTel)miss.push("le numéro WhatsApp");
   if(!v('maps')&&!hasLink)miss.push("le lien Google Maps");
-  var empty=!c.P.length&&!c.N.length&&!v('nom')&&!v('wa')&&!v('maps')&&!v('act')&&!v('slogan');
+  var empty=blocks().length<=1;
   if(empty){e.textContent="Rien à envoyer : parlez, écrivez ou remplissez au moins une case.";return {ok:false,miss:miss};}
   e.textContent=miss.length?"⚠️ Il manque : "+miss.join(", ")+" (envoyé quand même, vous pourrez le compléter sur WhatsApp).":"";
   return {ok:true,miss:miss};
@@ -314,7 +315,7 @@ document.getElementById('send').addEventListener('click',function(ev){
   var w=null;try{w=window.open(waUrl(parts[0]),'_blank');}catch(x){}
   if(!w){window.location.href=waUrl(parts[0]);}
   er.textContent=(ck.miss.length?"⚠️ Il manque : "+ck.miss.join(", ")+". ":"")+"Dans WhatsApp, appuyez sur « Envoyer ». Le résumé complet est aussi copié : si besoin, collez-le dans WhatsApp au 01 51 03 09 57.";
-  try{mo.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(x){}
+  try{mo.scrollIntoView({block:'nearest',behavior:'auto'});}catch(x){}
 });
 document.getElementById('copy').onclick=function(){
   if(!check().ok)return; var t=build(); show(t);
@@ -379,7 +380,7 @@ function openItem(id,cont){
   var it=load().filter(function(x){return x.id===id;})[0];if(!it)return;
   ta.value=it.t;setCur(it.kind,it.num,it.id);saveD();warnUI();render();
   vst.textContent=cont?'':"Texte affiché. Relisez-le, modifiez-le, puis appuyez sur Enregistrer.";
-  ta.scrollTop=0;try{ta.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){}
+  ta.scrollTop=0;stick=false;try{ta.scrollIntoView({block:'center',behavior:'auto'});}catch(e){}
   if(cont)startRec();
 }
 function removeItem(id){
@@ -387,14 +388,23 @@ function removeItem(id){
   if(cur.id===id){stopRec();ta.value='';setCur('n',0,null);saveD();warnUI();}
   render();
 }
-function ui(on){listening=on;mic.className='mic'+(on?' on':'');mic.textContent=on?'⏹ Arrêter':'🎤 Appuyer pour parler';warnUI();}
+function ui(on){listening=on;document.body.classList.toggle('rec',on);mic.className='mic'+(on?' on':'');mic.textContent=on?'⏹ Arrêter':'🎤 Appuyer pour parler';warnUI();}
 function stopRec(){
-  want=false;clearTimeout(rst);
+  want=false;clearTimeout(rst);if(raf){cancelAnimationFrame(raf);applyTxt();}
   if(recActive&&rec){try{rec.stop();}catch(e){}}
   else if(listening){ui(false);saveD();vst.textContent="Dictée arrêtée. Relisez et corrigez, puis enregistrez.";}
 }
 function fallback(msg,tip){want=false;clearTimeout(rst);ui(false);vst.textContent=msg+(tip===false?"":" Appuyez dans la case et utilisez le micro 🎤 de votre clavier.");if(tip!==false)ta.focus();}
-var sid=0,want=false,recActive=false,rst=null;
+var sid=0,want=false,recActive=false,rst=null,pendingTxt=null,raf=0,stick=true,dT=null;
+/* Défilement fluide : on ne touche au scroll que si la personne est déjà en bas de la case */
+ta.addEventListener('scroll',function(){stick=(ta.scrollHeight-ta.scrollTop-ta.clientHeight)<40;},{passive:true});
+function saveDT(){clearTimeout(dT);dT=setTimeout(saveD,700);}
+function applyTxt(){
+  raf=0;if(pendingTxt===null)return;
+  var t=pendingTxt;pendingTxt=null;
+  if(ta.value!==t){var st=ta.scrollTop;ta.value=t;ta.scrollTop=stick?ta.scrollHeight:st;}
+  saveDT();
+}
 /* Anti-doublon : fusionne les segments de dictée en retirant ce qui se répète */
 function mergeSeg(acc,seg){
   var a=acc.split(/\s+/).filter(Boolean),b=seg.split(/\s+/).filter(Boolean);
@@ -423,7 +433,7 @@ function startRec(silent){
   base=ta.value.trim()?ta.value.replace(/\s+$/,'')+' ':'';
   var started=false;
   rec.onstart=function(){if(my!==sid)return;started=true;recActive=true;clearTimeout(tmo);ui(true);vst.textContent="Je vous écoute… parlez. Appuyez sur « Arrêter » quand vous avez fini.";};
-  rec.onresult=function(e){if(my!==sid)return;ta.value=base+cleanTranscript(e.results);ta.scrollTop=ta.scrollHeight;saveD();};
+  rec.onresult=function(e){if(my!==sid)return;var txt=base+cleanTranscript(e.results);pendingTxt=txt;if(!raf)raf=requestAnimationFrame(applyTxt);};
   rec.onerror=function(e){
     if(my!==sid)return;
     clearTimeout(tmo);
@@ -440,7 +450,7 @@ function startRec(silent){
 }
 mic.onclick=function(){if(listening){stopRec();return;}startRec();};
 pb.onclick=function(){stopRec();commit();setCur('p',nextNum(),null);ta.value='';saveD();warnUI();vst.textContent='';startRec();};
-ta.addEventListener('input',function(){saveD();warnUI();});
+ta.addEventListener('input',function(){saveDT();warnUI();});
 $('vsave').onclick=function(){stopRec();if(!commit()){vst.textContent="Rien à enregistrer.";return;}vst.textContent="✅ Enregistré. Appuyez sur « Produit » pour le suivant, ou continuez.";};
 $('vclr').onclick=function(){stopRec();ta.value='';setCur('n',0,null);saveD();warnUI();vst.textContent="";render();};
 function collect(){
